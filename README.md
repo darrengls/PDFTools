@@ -13,7 +13,15 @@ A simple desktop app to split and merge PDF files. Drag and drop your documents,
 - **Drag and Drop**: Drop files, or a whole folder, directly into the app.
 - **Lossless Optimization**: Reduces file size without touching image quality.
 
+## 🚀 Download
+
+The ready-to-use Windows app is available in the `dist` folder: [PDF_Splitter.exe](https://github.com/darrengls/PDFTools/raw/main/dist/PDF_Splitter.exe)
+
+Just download it and double-click. No Python or qpdf installation is needed, everything is bundled inside.
+
 ## 📋 Requirements
+
+To run or build the app from the source code:
 
 - **Python 3.x**: Ensure you have Python installed. You can download it from the [official website](https://www.python.org/).
 - **qpdf**: The PDF engine used by the app. Install it with `winget install qpdf` or from the [qpdf releases](https://github.com/qpdf/qpdf/releases).
@@ -29,30 +37,34 @@ A simple desktop app to split and merge PDF files. Drag and drop your documents,
 
 2. **Install the required libraries**:
     ```bash
-    pip install -r requirements.txt
+    pip install customtkinter tkinterdnd2
     ```
 
 3. **Run the program**:
     ```bash
-    python pdf_tools.py
+    python split.py
     ```
 
 ## 📦 Build the .exe
 
-1. **Create a `qpdf_bin` folder** next to `pdf_tools.py` and copy everything from `C:\Program Files\qpdf X.Y.Z\bin\` into it (`qpdf.exe` and all the `.dll` files).
-
-2. **Run the build script**:
+1. **Install PyInstaller**:
     ```bash
-    build_exe.bat
+    pip install pyinstaller
     ```
 
-3. **Get your app** in `dist\PDF Tools.exe`. It works on any Windows PC, without Python or qpdf installed.
+2. **Build the app** (qpdf is bundled inside the .exe):
+    ```bash
+    pyinstaller --noconfirm --onefile --windowed --name "PDF_Splitter" --collect-all customtkinter --collect-all tkinterdnd2 --add-binary "C:\Program Files\qpdf 12.4.2\bin\*;qpdf_bin" split.py
+    ```
+    If you have another qpdf version, change `qpdf 12.4.2` to match your folder in `C:\Program Files`.
+
+3. **Get your app** in `dist\PDF_Splitter.exe`.
 
 ## 📂 Project Structure
 
-- `pdf_tools.py`: The main Python script that runs the app.
-- `requirements.txt`: The Python libraries needed by the project.
-- `build_exe.bat`: Script that builds the Windows executable.
+- `split.py`: The main Python script that runs the app.
+- `dist/PDF_Splitter.exe`: The compiled Windows app, ready to use.
+- `assets/`: Screenshots used in this README.
 - `README.md`: Instructions and documentation for the project.
 
 ## 📖 How It Works
