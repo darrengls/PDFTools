@@ -1,44 +1,23 @@
 # PDFTools
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue?style=flat-square&logo=python)
+![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat-square&logo=python)
 ![CustomTkinter](https://img.shields.io/badge/CustomTkinter-5.x-orange?style=flat-square&logo=python)
-![qpdf](https://img.shields.io/badge/qpdf-11%2B-lightgrey?style=flat-square)
-![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square&logo=windows)
 
-A simple desktop app to **split** and **merge** PDF files. Drag and drop your documents, choose how you want them cut or combined, and click one button. Built with CustomTkinter for a clean dark interface, and powered by [qpdf](https://qpdf.sourceforge.io/) so your pages are never re-rendered: text, images and quality stay exactly the same.
-
-![PDF Splitter](assets/split.png)
+A simple desktop app to split and merge PDF files. Drag and drop your documents, choose how you want them cut or combined, and click one button. The interface is built with CustomTkinter, and the PDF work is done by qpdf, so pages are never re-rendered: text, images and quality stay exactly the same.
 
 ## ✨ Features
 
-### ✂️ Split
-- **By page count**: e.g. one file every 30 pages.
-- **By maximum size (KB)**: perfect for email or upload limits. The app finds the largest page range that stays under the limit for every part.
-- **Clear file names**: `part_1_pages_1-30.pdf`, `part_2_pages_31-60.pdf`, …
-
-### 🔗 Merge
-- **Add many PDFs at once**: drag and drop files, or a whole folder (sorted in natural order: `file2` before `file10`).
-- **Reorder easily**: Move up / Move down buttons, or `Alt + ↑ / ↓`. Remove with `Delete`.
-- **Lossless size optimization** (optional).
-- **Handles large batches**: very long file lists are merged in several passes automatically.
-
-### 🛡️ Everyday comfort
-- **Drag and drop** everywhere.
-- **No console windows**: qpdf runs silently in the background.
-- **Responsive UI**: work happens in a background thread with a progress bar.
-- **Safety checks**: invalid names, overwriting an input file, existing output folders, unreadable PDFs (the faulty file is named in the error).
-
-![PDF Merger](assets/merge.png)
+- **Split by Pages**: Cut a PDF into files with a fixed number of pages (e.g. one file every 30 pages).
+- **Split by Size**: Cut a PDF into files that stay under a maximum size in KB, perfect for email or upload limits.
+- **Merge PDFs**: Combine several PDFs into one, in the order you choose (Move up / Move down, or `Alt + ↑ / ↓`).
+- **Drag and Drop**: Drop files, or a whole folder, directly into the app.
+- **Lossless Optimization**: Reduces file size without touching image quality.
 
 ## 📋 Requirements
 
-- **Python 3.9+**: download it from the [official website](https://www.python.org/).
-- **qpdf**: the PDF engine used under the hood.
-  ```bash
-  winget install qpdf
-  ```
-  or download it from the [qpdf releases](https://github.com/qpdf/qpdf/releases).
-- **Python libraries**: `customtkinter` and `tkinterdnd2`.
+- **Python 3.x**: Ensure you have Python installed. You can download it from the [official website](https://www.python.org/).
+- **qpdf**: The PDF engine used by the app. Install it with `winget install qpdf` or from the [qpdf releases](https://github.com/qpdf/qpdf/releases).
+- **CustomTkinter and tkinterdnd2**: Used for the interface and drag and drop.
 
 ## 🛠️ Installation
 
@@ -58,46 +37,40 @@ A simple desktop app to **split** and **merge** PDF files. Drag and drop your do
     python pdf_tools.py
     ```
 
-The app finds qpdf automatically (bundled `qpdf_bin` folder, `PATH`, `Program Files` or WinGet).
+## 📦 Build the .exe
 
-## 📦 Build a standalone .exe
+1. **Create a `qpdf_bin` folder** next to `pdf_tools.py` and copy everything from `C:\Program Files\qpdf X.Y.Z\bin\` into it (`qpdf.exe` and all the `.dll` files).
 
-Create a single `PDF Tools.exe` that works on any Windows PC, **without Python or qpdf installed**.
-
-1. Create a `qpdf_bin` folder next to `pdf_tools.py`.
-2. Copy **everything** from `C:\Program Files\qpdf X.Y.Z\bin\` into it (`qpdf.exe` **and** all the `.dll` files).
-3. Double-click `build_exe.bat`, or run:
+2. **Run the build script**:
     ```bash
-    pyinstaller --noconfirm --onefile --windowed --name "PDF Tools" --collect-all customtkinter --collect-all tkinterdnd2 --add-data "qpdf_bin;qpdf_bin" pdf_tools.py
+    build_exe.bat
     ```
-4. Your app is ready in `dist\PDF Tools.exe` 🎉
 
-> 💡 If the `.exe` starts slowly or your antivirus complains, replace `--onefile` with `--onedir` and share the whole `dist\PDF Tools\` folder.
+3. **Get your app** in `dist\PDF Tools.exe`. It works on any Windows PC, without Python or qpdf installed.
 
 ## 📂 Project Structure
 
-- `pdf_tools.py`: The main application (interface + split / merge logic).
-- `requirements.txt`: Python dependencies.
-- `build_exe.bat`: One-click script to build the Windows executable.
-- `assets/`: Screenshots used in this README.
+- `pdf_tools.py`: The main Python script that runs the app.
+- `requirements.txt`: The Python libraries needed by the project.
+- `build_exe.bat`: Script that builds the Windows executable.
 - `README.md`: Instructions and documentation for the project.
 
 ## 📖 How It Works
 
-1. **Split by pages**: the PDF is cut into fixed ranges, each one extracted with `qpdf --pages`.
-2. **Split by size**: for each part, the app first tries all remaining pages, then uses a **binary search** to find the biggest page range whose output stays under the maximum size.
-3. **Merge**: every file is checked first (page count), then qpdf combines them in the order shown in the list.
-4. **Optimization**: object streams are generated and Flate streams recompressed. This is **lossless**: JPEG images are never recompressed, so quality is preserved.
-
-> ⚠️ Bookmarks (outlines) from the source files are not carried over when merging. Pages, links and form fields are kept.
+1. **Split**: The PDF is cut into page ranges with qpdf. In size mode, the app searches for the biggest range of pages that stays under the maximum size.
+2. **Merge**: Each file is checked first, then qpdf combines them in the order shown in the list.
+3. **Optimization**: The PDF structure is rebuilt and compressed without recompressing images, so the quality is preserved.
 
 ## ⚡ Technologies Used
 
 - **Python**: The programming language used for this project.
-- **CustomTkinter**: Modern-looking widgets on top of Tkinter.
-- **tkinterdnd2**: Native drag and drop support.
-- **qpdf**: Fast, lossless PDF manipulation.
-- **PyInstaller**: Packaging into a standalone Windows executable.
+- **CustomTkinter**: A library that provides modern-looking widgets for Tkinter.
+- **qpdf**: A command-line tool for fast and lossless PDF manipulation.
+- **PyInstaller**: A tool that packages the app into a standalone Windows executable.
+
+## 📸 Screenshot
+
+![PDF Splitter](assets/split.png)
 
 ## 🔗 License
 
@@ -105,4 +78,6 @@ This project is open-source and available under the MIT License. Feel free to fo
 
 ---
 
-Enjoy splitting and merging your PDFs in a couple of clicks! 📄✂️🔗
+Enjoy splitting and merging your PDFs in just a few clicks!
+
+![PDF Merger](assets/merge.png)
